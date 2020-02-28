@@ -18,7 +18,7 @@ public class GeminiProductStreamingService extends JsonNettyStreamingService {
     private final CurrencyPair currencyPair;
 
     public GeminiProductStreamingService(String symbolUrl, CurrencyPair currencyPair) {
-        super(symbolUrl, Integer.MAX_VALUE);
+        super(symbolUrl, Integer.MAX_VALUE, DEFAULT_CONNECTION_TIMEOUT, DEFAULT_RETRY_DURATION, 15);
         this.currencyPair = currencyPair;
     }
 
@@ -41,4 +41,9 @@ public class GeminiProductStreamingService extends JsonNettyStreamingService {
     public String getUnsubscribeMessage(String channelName) throws IOException {
         return null;
     }
+    @Override
+    protected void handleIdle(ChannelHandlerContext ctx) {
+        ctx.writeAndFlush(new PingWebSocketFrame());
+    }
+}
 }
